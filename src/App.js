@@ -87,13 +87,13 @@ const change = (name, value) =>
       schema.isValid(formValues).then(valid => setDisabled(!valid));
     }, [formValues]);
 
-// useEffect(() => {
-//   axios.get('https://reqres.in/api/orders')
-//     .then(res => {
-//      console.log(res.data.data)
+useEffect(() => {
+  axios.get('https://reqres.in/api/orders')
+    .then(res => {
+     console.log(res.data.data)
      
-//     }).catch(err => console.error(err));
-// }, [])
+    }).catch(err => console.error(err));
+}, [])
 
 
   return (

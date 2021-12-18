@@ -13,9 +13,8 @@ const Form = (props) => {
 
       const history = useHistory()
 
-    const onSubmit = evt => {
-        evt.preventDefault()
-        submit()
+    const onSubmit = evt => { evt.preventDefault();
+         submit()
         history.push("/post")
       }
     
@@ -31,7 +30,7 @@ const Form = (props) => {
             <form  id='pizza-form' onSubmit={onSubmit}>
             <div id='name-input'>
                     <label>
-                        <h2>Put your name</h2>
+                        Put your name
                         <input
                             id='name-input'
                             value={values.name}
@@ -83,71 +82,84 @@ const Form = (props) => {
                 </label>
            <div className="toppings">
                 <p>
-                <label>
-                    <h2>Add Toppings:</h2>
-                    
+                
+                    <label>Peppeorni
+
                 <input 
                     id="toppings"
                     type="checkbox"
                     checked={values.pepperoni} 
                     onChange={onChange} 
                     name="pepperoni" 
-                />Pepperoni
+                />
+                </label>
+                <label>Pepperoni
                 <input 
                     id="toppings" 
                     type="checkbox" 
                     checked={values.sausage} 
                     onChange={onChange} 
                     name="sausage" 
-                />Sausage
+                />
+                </label>
+                <label>Sausage
                 <input 
                     id="toppings" 
                     type="checkbox" 
                     checked={values.canadianBacon} 
                     onChange={onChange} name="canadianBacon" 
-                />Canadian Bacon
+                />
+                </label>
+                <label>
+                Canadian Bacon
                  <input 
                     id="toppings" 
                     type="checkbox" 
                     checked={values.jalapeno} 
                     onChange={onChange} name="jalapeno" 
-                />Jalapeno
+                /></label>
+                <label>Jalapeno
                 <input 
                     id="toppings" 
                     type="checkbox" 
                     checked={values.onions} 
                     onChange={onChange} name="onions" 
-                />Onions
+                /></label>
+                <label>Onions
                 <input 
                     id="toppings" 
                     type="checkbox" 
                     checked={values.mushroom} 
                     onChange={onChange} 
                     name="mushroom" 
-                />Mushroom
+                /></label>
+                <label>Mushroom
                 <input 
                     id="toppings" 
                     type="checkbox" 
                     checked={values.greenPepper} 
                     onChange={onChange}
                      name="greenPepper" 
-                />Green Peppers
+                /></label>
+                <label>Green Peppers
                    <input 
                     id="toppings" 
                     type="checkbox" 
                     checked={values.extraCheese} 
                     onChange={onChange}
                      name="extraCheese" 
-                />Extra Cheese
+                /></label>
+                <label>Extra Cheese
                 <input 
                     id="toppings" 
                     type="checkbox" 
                     checked={values.threeCheese} 
                     onChange={onChange}
                      name="threeCheese" 
-                />Three Cheese
+                /></label>
+            
                   
-                    </label>
+            
             </p>
             </div>
             <div className='special-text'>
