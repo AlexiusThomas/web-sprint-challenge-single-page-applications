@@ -36,6 +36,7 @@ const initialFormErrors = {
   special: ''
 }
 const initialDisabled = true;
+const initialOrders = [];
 
 const App = () => {
 
@@ -87,13 +88,15 @@ const change = (name, value) =>
       schema.isValid(formValues).then(valid => setDisabled(!valid));
     }, [formValues]);
 
-useEffect(() => {
-  axios.get('https://reqres.in/api/orders')
-    .then(res => {
-     console.log(res.data.data)
+// useEffect(() => {
+//   axios.get('https://reqres.in/api/orders')
+//     .then(res => {
+//      console.log(res.data.data)
+//      setNewPizza([res.data, ...initialOrders])
+
      
-    }).catch(err => console.error(err));
-}, [])
+//     }).catch(err => console.error(err));
+// }, [])
 
 
   return (
