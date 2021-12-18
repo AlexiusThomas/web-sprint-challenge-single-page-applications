@@ -1,124 +1,116 @@
-import React, { useState, useEffect } from 'react'
-import HomePage from './components/HomePage.js'
-import Form from './components/Form.js'
-import PizzaPost from './components/Pizza.js'
-import axios from 'axios'
-import schema from './validation/schema.js'
-import * as yup from 'yup';
+import React, { useState, useEffect } from "react";
+import { Route, Link } from "react-router-dom";
+import axios from "axios";
+import * as yup from "yup";
+import PizzaForm from "./components/PizzaForm";
+import pizzaSchema from "./components/PizzaSchema";
+import Orders from "./components/Orders";
 
-import { Route, Link } from 'react-router-dom'
-// name: string,
-//     size: string,
-//     topping1: bool,
-//     topping2: bool,
-//     special: string,
-
-const initialFormValues = {
-    name: '',
-    size: '',
-    sauce1: false,
-    sauce2: false,
-    pepperoni: false,
-    sausage: false,
-    canadianBacon: false,
-    onions: false,
-    jalapeno: false,
-    mushroom: false,
-    greenPepper: false,
-    extraCheese: false,
-    threeCheese: false,
-    special: '',
-}
-const initialFormErrors = {
-  name: '',
-  size: '',
-  sauce: '',
-  special: ''
-}
-const initialDisabled = true;
+const initialForm = {
+  "name-input": "",
+  "size-dropdown": null,
+  pepperoni: false,
+  sausage: false,
+  onions: false,
+  greenPeppers: false,
+  "special-text": "",
+};
+const initialErrors = {
+  name: "",
+  size: "",
+};
 const initialOrders = [];
-
+const initialDisable = true;
+{
+  /* <img src="/"/> */
+}
 const App = () => {
+  const [formValues, setFormValues] = useState(initialForm);
+  const [orders, setOrders] = useState(initialOrders);
+  const [disabled, setDisabled] = useState(initialDisable);
+  const [formErrors, setFormErrors] = useState(initialErrors);
 
-const [formValues, setFormValues] =useState([initialFormValues]);
-const [formErrors, setFormErrors] = useState(initialFormErrors);
-const [confirmation, setConfirmation] = useState(initialFormValues);
-const [disabled, setDisabled] = useState(initialDisabled);
+  const postOrder = (newOrder) => {
+    axios
+      .post("https://reqres.in/api/orders", newOrder)
+      .then((resp) => {
+        setOrders([resp.data, ...orders]);
+      })
+      .catch((err) => console.log(err))
+      .finally(() => {
+        // setFormValues(initialForm);
+      });
+  };
 
+  const validate = (name, value) => {
+    yup
+      .reach(pizzaSchema, name)
+      .validate(value)
+      .then(() => setFormErrors({ ...formErrors, [name]: "" }))
+      .catch((err) => setFormErrors({ ...formErrors, [name]: err.errors[0] }));
+  };
 
-
-
-
-const setNewPizza = (newOrder) =>
-{
-    setConfirmation(newOrder);
-    setFormValues(initialFormValues);
-};
-
-const validate = (name, value) =>
-{
-    yup.reach(schema, name)
-        .validate(value)
-        .then(() => setFormErrors({ ...formErrors, [name]: '' }))
-        .catch(err => setFormErrors({ ...formErrors, [name]: err.errors[0] }));
-};
-
-
-const change = (name, value) =>
-{
+  const inputChange = (name, value) => {
     validate(name, value);
     setFormValues({
-        ...formValues,
-        [name]: value
+      ...formValues,
+      [name]: value,
     });
-};
- const submit = () =>
-    {
-        const newOrder = {
-            name: formValues.name.trim(),
-            size: formValues.size,
-            sauce: ['sauce1', 'sauce2'].filter(top => !!formValues[top]),
-            special: formValues.special.trim()
-        };
+  };
 
-        setNewPizza(newOrder);
+  const formSubmit = () => {
+    const newOrder = {
+      "name-input": formValues["name-input"].trim(),
+      "size-dropdown": formValues["size-dropdown"],
+      "special-text": formValues["special-text"],
+      toppings: ["pepperoni", "sausage", "onions", "greenPeppers"].filter(
+        (topping) => !!formValues[topping]
+      ),
     };
-    useEffect(() =>
-    {
-      schema.isValid(formValues).then(valid => setDisabled(!valid));
-    }, [formValues]);
+    postOrder(newOrder);
+  };
 
-// useEffect(() => {
-//   axios.get('https://reqres.in/api/orders')
-//     .then(res => {
-//      console.log(res.data.data)
-//      setNewPizza([res.data, ...initialOrders])
-
-     
-//     }).catch(err => console.error(err));
-// }, [])
-
+  useEffect(() => {
+    pizzaSchema.isValid(formValues).then((valid) => setDisabled(!valid));
+  }, [formValues]);
 
   return (
-    <div className="App">
-    <header>
-      <nav>
-      <h1>Lambda Eats</h1>
-        <Link to="/">Home Page</Link>
-        <Link to="/pizza">Form</Link>
-       <Link to="/post">Pizza</Link> 
-        </nav>
-    </header>
-    <Route exact path='/post'>
-    <PizzaPost details={confirmation}/>
-    </Route>
-    <Route id='name-input' path="/pizza">
-      <Form change={change} submit={submit} values={formValues} disabled={disabled} errors={formErrors}/>
-    </Route>
-    <Route exact path="/"> 
-      <HomePage />
-    </Route>
-      
+    <div className="app-container">
+      <header>
+        <Route path="/">
+          <Link to="/" style={{ textDecoration: "none" }}>
+            <h1 className="h1">Lambda Eats</h1>
+          </Link>
+          <Link to="/" style={{ textDecoration: "none" }}>
+            <p>Home</p>
+          </Link>
+        </Route>
+      </header>
+
+      <Route exact path="/">
+        <Link to={`/pizza`}>
+          <button id="order-pizza">Order Now</button>
+        </Link>
+      </Route>
+
+      <Route path="/pizza">
+        <PizzaForm
+          disabled={disabled}
+          change={inputChange}
+          submit={formSubmit}
+          values={formValues}
+          errors={formErrors}
+        />
+      </Route>
+
+      {/* <Route path="/orders"> */}
+      <Orders orders={orders} />
+      {/* </Route> */}
+      {/**for some reason my routes for the orders tend to break once in a while, if you encounter the orders not showing up please refresh the server... I'm thinking that the api has a limit and it's blocking new request */}
+
+      {/* <img src='/Pizza.jpg'/> */}
+      {/* <img src="./img/Pizza.jpg" /> */}
+      {/* <Img /> */}
     </div>
   );
 };
